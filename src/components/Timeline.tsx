@@ -16,12 +16,12 @@ function MemoryCard({
 
   return (
     <motion.div
-      className={`flex items-center gap-4 md:gap-8 ${
+      className={`flex items-center gap-4 sm:gap-6 md:gap-8 ${
         isEven ? "md:flex-row" : "md:flex-row-reverse"
-      } flex-col md:flex-row`}
-      initial={{ opacity: 0, y: 50, x: isEven ? -30 : 30 }}
-      whileInView={{ opacity: 1, y: 0, x: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+      } flex-col`}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
       transition={{
         duration: 0.7,
         ease: [0.22, 1, 0.36, 1],
@@ -30,13 +30,13 @@ function MemoryCard({
     >
       {/* Image container */}
       <motion.div
-        className="w-full md:w-1/2 aspect-[4/3] rounded-2xl overflow-hidden
+        className="w-full md:w-1/2 aspect-[16/10] sm:aspect-[4/3] rounded-2xl overflow-hidden
           bg-gradient-to-br from-wine/20 to-midnight-light
           border border-wine/10 flex items-center justify-center
-          relative group cursor-pointer"
-        whileHover={{ rotateY: 3, rotateX: -2, scale: 1.02 }}
+          relative group cursor-pointer touch-manipulation"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         transition={{ type: "spring", stiffness: 200, damping: 20 }}
-        style={{ perspective: 800 }}
       >
         {memory.image ? (
           /* eslint-disable-next-line @next/next/no-img-element */
@@ -47,29 +47,29 @@ function MemoryCard({
           />
         ) : (
           /* Placeholder — swap with real photos! */
-          <div className="flex flex-col items-center gap-3 text-rose/30">
-            <Camera className="w-10 h-10" />
-            <span className="text-sm font-inter">📷 add your photo</span>
+          <div className="flex flex-col items-center gap-2 sm:gap-3 text-rose/40 p-4">
+            <Camera className="w-8 h-8 sm:w-10 sm:h-10 text-crimson/50" />
+            <span className="text-xs sm:text-sm font-inter">📷 add your photo</span>
           </div>
         )}
 
-        {/* Hover overlay with emoji */}
+        {/* Overlay with emoji */}
         <div
-          className="absolute inset-0 bg-gradient-to-t from-midnight/60 to-transparent
+          className="absolute inset-0 bg-gradient-to-t from-midnight/70 to-transparent
             opacity-0 group-hover:opacity-100 transition-opacity duration-300
-            flex items-end justify-center pb-4"
+            flex items-end justify-center pb-3 sm:pb-4"
         >
-          <span className="text-3xl">{memory.emoji}</span>
+          <span className="text-2xl sm:text-3xl">{memory.emoji}</span>
         </div>
       </motion.div>
 
       {/* Text content */}
-      <div className={`w-full md:w-1/2 ${isEven ? "md:text-left" : "md:text-right"} text-center`}>
-        <span className="text-3xl mb-2 block">{memory.emoji}</span>
-        <h3 className="font-playfair text-xl md:text-2xl text-cream mb-3">
+      <div className={`w-full md:w-1/2 ${isEven ? "md:text-left" : "md:text-right"} text-center px-2 sm:px-0`}>
+        <span className="text-2xl sm:text-3xl mb-1.5 sm:mb-2 block">{memory.emoji}</span>
+        <h3 className="font-playfair text-lg sm:text-xl md:text-2xl text-cream mb-2 sm:mb-3">
           {memory.title}
         </h3>
-        <p className="font-inter text-rose-light/70 text-sm md:text-base leading-relaxed">
+        <p className="font-inter text-rose-light/75 text-xs sm:text-sm md:text-base leading-relaxed">
           {memory.caption}
         </p>
       </div>
@@ -81,7 +81,7 @@ export default function Timeline() {
   return (
     <section
       id="timeline"
-      className="relative py-20 md:py-32 px-6"
+      className="relative py-16 sm:py-20 md:py-32 px-4 sm:px-6 overflow-hidden"
       style={{
         background:
           "linear-gradient(180deg, #1a0a10 0%, #1f0e14 50%, #241218 100%)",
@@ -90,16 +90,16 @@ export default function Timeline() {
       <div className="max-w-4xl mx-auto">
         {/* Section heading */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-playfair text-3xl md:text-5xl text-cream mb-4">
+          <h2 className="font-playfair text-2xl sm:text-3xl md:text-5xl text-cream mb-3 sm:mb-4">
             Our Little Moments
           </h2>
-          <p className="font-inter text-rose/50 text-sm md:text-base">
+          <p className="font-inter text-rose/60 text-xs sm:text-sm md:text-base">
             the ones that play on repeat in my head
           </p>
         </motion.div>
@@ -108,7 +108,7 @@ export default function Timeline() {
         <div className="hidden md:block absolute left-1/2 top-44 bottom-32 w-px bg-gradient-to-b from-transparent via-wine/30 to-transparent" />
 
         {/* Memory cards */}
-        <div className="space-y-16 md:space-y-24 relative">
+        <div className="space-y-12 sm:space-y-16 md:space-y-24 relative">
           {MEMORIES.map((memory, i) => (
             <MemoryCard key={memory.id} memory={memory} index={i} />
           ))}

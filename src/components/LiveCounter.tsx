@@ -12,11 +12,12 @@ function CounterDigit({ value, label }: { value: number; label: string }) {
     <div className="flex flex-col items-center">
       <div
         className="relative bg-midnight-light/80 backdrop-blur-sm border border-wine/20
-          rounded-xl px-4 py-3 md:px-6 md:py-4 min-w-[70px] md:min-w-[100px]"
+          rounded-lg px-2.5 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4
+          min-w-[58px] sm:min-w-[70px] md:min-w-[100px]"
       >
         <motion.span
           key={value}
-          className="font-playfair text-3xl md:text-5xl lg:text-6xl font-bold
+          className="font-playfair text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold
             bg-gradient-to-b from-gold-light via-gold to-crimson bg-clip-text text-transparent
             block text-center"
           initial={{ opacity: 0.5, y: -5 }}
@@ -27,9 +28,9 @@ function CounterDigit({ value, label }: { value: number; label: string }) {
         </motion.span>
 
         {/* Subtle glow behind digits */}
-        <div className="absolute inset-0 rounded-xl bg-crimson/5 blur-md -z-10" />
+        <div className="absolute inset-0 rounded-lg bg-crimson/5 blur-md -z-10" />
       </div>
-      <span className="mt-2 text-rose/50 text-xs md:text-sm font-inter uppercase tracking-wider">
+      <span className="mt-1.5 sm:mt-2 text-rose/50 text-[10px] sm:text-xs md:text-sm font-inter uppercase tracking-wider">
         {label}
       </span>
     </div>
@@ -42,7 +43,7 @@ export default function LiveCounter() {
   return (
     <section
       id="counter"
-      className="relative py-20 md:py-32 px-6"
+      className="relative py-16 sm:py-20 md:py-32 px-4 sm:px-6"
       style={{
         background:
           "linear-gradient(180deg, #241218 0%, #2a141c 50%, #301820 100%)",
@@ -56,33 +57,33 @@ export default function LiveCounter() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <Clock className="w-6 h-6 text-gold/50 mx-auto mb-4" />
-          <p className="font-inter text-rose-light/60 text-sm md:text-base mb-2">
+          <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-gold/50 mx-auto mb-3 sm:mb-4" />
+          <p className="font-inter text-rose-light/60 text-xs sm:text-sm md:text-base mb-2">
             since the day I first saw you
           </p>
-          <h2 className="font-playfair text-2xl md:text-4xl text-cream mb-12">
+          <h2 className="font-playfair text-xl sm:text-2xl md:text-4xl text-cream mb-8 sm:mb-12">
             Every second counts
           </h2>
         </motion.div>
 
-        {/* Counter digits */}
+        {/* Counter digits — 2x2 grid on tiny screens, row on larger */}
         <motion.div
-          className="flex justify-center gap-3 md:gap-6 flex-wrap"
+          className="flex justify-center items-start gap-1.5 sm:gap-3 md:gap-6"
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <CounterDigit value={days} label="days" />
-          <span className="self-center text-wine text-2xl md:text-4xl font-playfair mt-[-20px]">
+          <span className="self-center text-wine text-lg sm:text-2xl md:text-4xl font-playfair mt-[-16px] sm:mt-[-20px]">
             :
           </span>
           <CounterDigit value={hours} label="hours" />
-          <span className="self-center text-wine text-2xl md:text-4xl font-playfair mt-[-20px]">
+          <span className="self-center text-wine text-lg sm:text-2xl md:text-4xl font-playfair mt-[-16px] sm:mt-[-20px]">
             :
           </span>
           <CounterDigit value={minutes} label="mins" />
-          <span className="self-center text-wine text-2xl md:text-4xl font-playfair mt-[-20px]">
+          <span className="self-center text-wine text-lg sm:text-2xl md:text-4xl font-playfair mt-[-16px] sm:mt-[-20px]">
             :
           </span>
           <CounterDigit value={seconds} label="secs" />
@@ -90,7 +91,7 @@ export default function LiveCounter() {
 
         {/* Caption */}
         <motion.p
-          className="mt-10 font-inter text-rose/60 text-sm md:text-base italic max-w-md mx-auto"
+          className="mt-8 sm:mt-10 font-inter text-rose/60 text-xs sm:text-sm md:text-base italic max-w-sm sm:max-w-md mx-auto px-2"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}

@@ -12,9 +12,9 @@ import {
 function ConfettiParticle({ index }: { index: number }) {
   // Deterministic but varied positions
   const angle = (index / 30) * Math.PI * 2;
-  const distance = 50 + (index * 37) % 200;
+  const distance = 40 + (index * 37) % 180;
   const x = Math.cos(angle) * distance;
-  const y = Math.sin(angle) * distance - 100;
+  const y = Math.sin(angle) * distance - 80;
   const size = 4 + (index % 5) * 2;
   const colors = [
     "#d4a853",
@@ -79,7 +79,7 @@ export default function ClosingNote() {
           }
         });
       },
-      { threshold: 0.4 }
+      { threshold: 0.3 }
     );
 
     observer.observe(section);
@@ -89,16 +89,16 @@ export default function ClosingNote() {
   return (
     <section
       id="closing"
-      className="relative min-h-screen flex items-center justify-center px-6 py-20 overflow-hidden"
+      className="relative min-h-[100dvh] flex items-center justify-center px-4 sm:px-6 py-16 sm:py-20 overflow-hidden"
       style={{
         background:
           "linear-gradient(180deg, #42262f 0%, #5c2a3a 30%, #7a3345 60%, #8a3b4e 80%, #4a2030 100%)",
       }}
     >
       {/* Floating nickname in background */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
         <motion.span
-          className="font-playfair text-[120px] md:text-[200px] lg:text-[280px] text-cream/[0.03] select-none whitespace-nowrap"
+          className="font-playfair text-[70px] sm:text-[140px] md:text-[200px] lg:text-[280px] text-cream/[0.03] select-none whitespace-nowrap"
           animate={{
             y: [0, -15, 0],
             rotate: [-2, 1, -2],
@@ -124,7 +124,7 @@ export default function ClosingNote() {
 
       {/* Content */}
       <motion.div
-        className="relative z-20 max-w-2xl text-center"
+        className="relative z-20 max-w-2xl text-center px-2"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -132,21 +132,21 @@ export default function ClosingNote() {
       >
         {/* Owl icon */}
         <motion.div
-          className="mb-8"
+          className="mb-6 sm:mb-8"
           initial={{ scale: 0 }}
           whileInView={{ scale: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
         >
-          <span className="text-5xl md:text-6xl">🦉</span>
+          <span className="text-4xl sm:text-5xl md:text-6xl">🦉</span>
         </motion.div>
 
         {/* Closing paragraphs */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {CLOSING_PARAGRAPHS.map((paragraph, i) => (
             <motion.p
               key={i}
-              className="font-playfair text-xl md:text-2xl lg:text-3xl text-cream/90 leading-relaxed"
+              className="font-playfair text-lg sm:text-xl md:text-2xl lg:text-3xl text-cream/95 leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -159,16 +159,16 @@ export default function ClosingNote() {
 
         {/* Sign off */}
         <motion.div
-          className="mt-12"
+          className="mt-8 sm:mt-12"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 1.2, duration: 0.8 }}
         >
-          <p className="font-inter text-rose-light/60 text-base md:text-lg mb-2">
+          <p className="font-inter text-rose-light/70 text-sm sm:text-base md:text-lg mb-1.5 sm:mb-2">
             {CLOSING_SIGN_OFF}
           </p>
-          <p className="font-playfair text-2xl md:text-3xl text-gold italic">
+          <p className="font-playfair text-xl sm:text-2xl md:text-3xl text-gold italic">
             {CLOSING_NAME}
           </p>
         </motion.div>
