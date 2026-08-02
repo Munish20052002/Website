@@ -1,14 +1,23 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Sparkles, X, ChevronRight } from "lucide-react";
+import { useSound } from "@/context/SoundContext";
+import MusicToggle from "@/components/MusicToggle";
 
 // ============================================================
 // INTRO SPLASH SCREEN — The very first thing she sees
 // ============================================================
 
 function IntroSplash({ onStart }: { onStart: () => void }) {
+  const { startAudio } = useSound();
+
+  const handleStart = () => {
+    startAudio();
+    onStart();
+  };
+
   return (
     <motion.div
       className="fixed inset-0 z-[200] overflow-y-auto overflow-x-hidden min-h-[100dvh] flex items-center justify-center"
@@ -55,6 +64,9 @@ function IntroSplash({ onStart }: { onStart: () => void }) {
         )
       )}
 
+      {/* Music control always available */}
+      <MusicToggle />
+
       {/* Main content */}
       <div className="relative z-20 flex flex-col items-center justify-center min-h-[100dvh] px-5 sm:px-6 py-12 text-center w-full max-w-lg mx-auto">
         {/* Top sparkle decoration */}
@@ -82,7 +94,7 @@ function IntroSplash({ onStart }: { onStart: () => void }) {
           ── something special awaits ──
         </motion.p>
 
-        {/* Main heading — dramatic entry */}
+        {/* Main heading */}
         <motion.h1
           className="font-playfair text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-tight mb-1 sm:mb-2"
           initial={{ opacity: 0, y: 50, scale: 0.9 }}
@@ -137,7 +149,7 @@ function IntroSplash({ onStart }: { onStart: () => void }) {
           transition={{ delay: 1.5, duration: 1 }}
         />
 
-        {/* Subtext — builds anticipation */}
+        {/* Subtext */}
         <motion.p
           className="font-inter text-cream/80 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-md leading-relaxed mb-2"
           initial={{ opacity: 0, y: 20 }}
@@ -163,9 +175,9 @@ function IntroSplash({ onStart }: { onStart: () => void }) {
           let&apos;s see if you really know us 💕
         </motion.p>
 
-        {/* CTA Button — thrilling pulsing entrance */}
+        {/* CTA Button */}
         <motion.button
-          onClick={onStart}
+          onClick={handleStart}
           className="relative px-8 py-3.5 sm:px-10 sm:py-4 rounded-full cursor-pointer
             bg-gradient-to-r from-wine via-crimson to-wine
             text-cream font-inter text-base sm:text-lg font-medium
@@ -202,7 +214,7 @@ function IntroSplash({ onStart }: { onStart: () => void }) {
           </span>
         </motion.button>
 
-        {/* Pulsing heart under button */}
+        {/* Pulsing heart */}
         <motion.div
           className="mt-6 sm:mt-8 text-xl sm:text-2xl"
           animate={{ scale: [1, 1.25, 1], opacity: [0.4, 0.75, 0.4] }}
@@ -239,14 +251,14 @@ const QUESTIONS: QuizQuestion[] = [
   },
   {
     question: "How much do I miss you?",
-    options: ["A lot", "Soo much", "Infinite ∞"],
-    correctIndex: 2,
+    options: ["A lot", "Soo much", "Infinite ∞", "All of the above 💕"],
+    correctIndex: 3,
     emoji: "🥺",
   },
   {
     question: "How much do I love you?",
-    options: ["Super duper much", "More than anybody else", "Infinite ∞"],
-    correctIndex: 2,
+    options: ["Super duper much", "More than anybody else", "Infinite ∞", "All of the above ❤️"],
+    correctIndex: 3,
     emoji: "❤️",
   },
 ];
@@ -476,6 +488,7 @@ function QuizScreen({
       transition={{ duration: 0.5 }}
     >
       <FloatingLoveEmojis />
+      <MusicToggle />
 
       {/* Progress dots */}
       <div className="absolute top-6 sm:top-8 left-1/2 -translate-x-1/2 flex gap-2.5 sm:gap-3 z-30">
@@ -649,6 +662,24 @@ type GatePhase = "intro" | "quiz" | "unlocked";
 
 export default function QuizGate({ children }: { children: React.ReactNode }) {
   const [phase, setPhase] = useState<GatePhase>("intro");
+  const { setTrack } = useSound();
+
+  // Set intro music on initial load
+  useEffect(() => {
+    if (phase === "intro") {
+      setTrack("intro");
+    }
+  }, [phase, setTrack]);
+
+  const handleStartQuiz = () => {
+    setTrack("quiz");
+    setPhase("quiz");
+  };
+
+  const handleUnlock = () => {
+    setTrack("letter");
+    setPhase("unlocked");
+  };
 
   if (phase === "unlocked") {
     return <>{children}</>;
@@ -657,10 +688,10 @@ export default function QuizGate({ children }: { children: React.ReactNode }) {
   return (
     <AnimatePresence mode="wait">
       {phase === "intro" && (
-        <IntroSplash key="intro" onStart={() => setPhase("quiz")} />
+        <IntroSplash key="intro" onStart={handleStartQuiz} />
       )}
       {phase === "quiz" && (
-        <QuizScreen key="quiz" onComplete={() => setPhase("unlocked")} />
+        <QuizScreen key="quiz" onComplete={handleUnlock} />
       )}
     </AnimatePresence>
   );

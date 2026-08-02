@@ -1,3 +1,5 @@
+"use client";
+
 import Hero from "@/components/Hero";
 import Apology from "@/components/Apology";
 import Timeline from "@/components/Timeline";
@@ -11,27 +13,30 @@ import MusicToggle from "@/components/MusicToggle";
 import FloatingParticles from "@/components/FloatingParticles";
 import CursorGlow from "@/components/CursorGlow";
 import QuizGate from "@/components/QuizGate";
+import { SoundProvider } from "@/context/SoundContext";
 
 export default function Home() {
   return (
-    <QuizGate>
-      {/* Persistent overlays */}
-      <ScrollProgress />
-      <MusicToggle />
-      <FloatingParticles />
-      <CursorGlow />
+    <SoundProvider>
+      <QuizGate>
+        {/* Persistent overlays */}
+        <ScrollProgress />
+        <MusicToggle />
+        <FloatingParticles />
+        <CursorGlow />
 
-      {/* Main content — sections flow dark → warm like a sunrise */}
-      <main>
-        <Hero />
-        <Apology />
-        <Timeline />
-        <LiveCounter />
-        <ReasonsGrid />
-        <CouponBook />
-        <ClosingNote />
-        <Footer />
-      </main>
-    </QuizGate>
+        {/* Main content — sections flow dark → warm like a sunrise */}
+        <main>
+          <Hero />
+          <Apology />
+          <Timeline />
+          <LiveCounter />
+          <ReasonsGrid />
+          <CouponBook />
+          <ClosingNote />
+          <Footer />
+        </main>
+      </QuizGate>
+    </SoundProvider>
   );
 }

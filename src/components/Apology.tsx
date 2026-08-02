@@ -1,14 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { PenLine } from "lucide-react";
+import { PenLine, ChevronDown } from "lucide-react";
 import { APOLOGY_PARAGRAPHS, APOLOGY_SIGN_OFF } from "@/utils/constants";
 
 export default function Apology() {
+  const handleScrollToTimeline = () => {
+    const timelineSection = document.getElementById("timeline");
+    if (timelineSection) {
+      timelineSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section
       id="apology"
-      className="relative py-16 sm:py-20 md:py-32 px-4 sm:px-6 flex items-center justify-center overflow-hidden"
+      className="relative py-16 sm:py-20 md:py-32 px-4 sm:px-6 flex flex-col items-center justify-center overflow-hidden"
       style={{
         background:
           "linear-gradient(180deg, #0a0a0f 0%, #140a0f 30%, #1a0a10 100%)",
@@ -71,6 +78,32 @@ export default function Apology() {
 
         {/* Decorative shadow under card */}
         <div className="absolute -bottom-3 left-3 right-3 h-6 bg-wine/5 rounded-2xl blur-xl -z-10" />
+      </motion.div>
+
+      {/* Guiding animated indicator / arrow to next section */}
+      <motion.div
+        className="mt-10 sm:mt-12 text-center z-20 flex flex-col items-center cursor-pointer group"
+        onClick={handleScrollToTimeline}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.8, duration: 0.6 }}
+      >
+        <p className="font-inter text-rose-light/60 text-xs sm:text-sm tracking-wider mb-2 group-hover:text-rose-light transition-colors flex items-center gap-1.5">
+          <span>Remember our moments?</span>
+          <span className="text-crimson">✨</span>
+        </p>
+
+        <motion.button
+          className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-wine/40 border border-crimson/30
+            flex items-center justify-center text-rose-light/80 group-hover:text-cream group-hover:bg-wine/70
+            group-hover:border-crimson/60 transition-all duration-300 shadow-lg shadow-wine/20"
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          aria-label="Scroll to memories timeline"
+        >
+          <ChevronDown className="w-5 h-5" />
+        </motion.button>
       </motion.div>
     </section>
   );
