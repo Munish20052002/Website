@@ -43,7 +43,7 @@ export const MEMORIES: MemoryItem[] = [
     title: "The saree moment",
     caption:
       "The first time I saw you in a saree, I literally forgot how to talk. You looked at me like 'what?' and I was just... done for.",
-    image: null, // 📷 REPLACE: "/images/saree.jpg"
+    image: "/images/ullu-saree.png",
     emoji: "🦉",
   },
   {
@@ -51,7 +51,7 @@ export const MEMORIES: MemoryItem[] = [
     title: "Kasauli, but make it chaos",
     caption:
       "We went to Kasauli and immediately got lost. No GPS, no clue, just us arguing about which turn to take. Honestly? Best wrong turn of my life.",
-    image: null, // 📷 REPLACE: "/images/kasauli.jpg"
+    image: "/images/kasauli-trip.png",
     emoji: "🗺️",
   },
   {
@@ -59,7 +59,7 @@ export const MEMORIES: MemoryItem[] = [
     title: "Cheese burst at Domino's",
     caption:
       "You and cheese burst pizza is a love story I can never compete with. I've accepted my place. I'm second.",
-    image: null, // 📷 REPLACE: "/images/pizza.jpg"
+    image: "/images/pizza-moment.png",
     emoji: "🍕",
   },
   {
@@ -67,7 +67,7 @@ export const MEMORIES: MemoryItem[] = [
     title: "The slim vs. mottu debate",
     caption:
       "You call me skinny like it's an insult. I call you mottu like it's the softest word I know. We're both right.",
-    image: null, // 📷 REPLACE: "/images/us-funny.jpg"
+    image: "/images/slim-vs-mottu.png",
     emoji: "😂",
   },
 ];
