@@ -139,7 +139,7 @@ export const COUPONS: CouponItem[] = [
 export const CLOSING_PARAGRAPHS = [
   `I'm not perfect, Ullu. I couldn't be there, I didn't have a gift, and half the time I don't know what I'm doing.`,
   `But I know one thing for sure — you're the best thing that's ever happened to me. Every single day since July 8th has been better because you're in it.`,
-  `Happy Girlfriend's Day, Mottu. I love you. More than cheese burst pizza. And you know that's saying something.`,
+  `Happy Girlfriend's Day, Mottu. I love you. More than words could ever explain. ❤️`,
 ];
 export const CLOSING_SIGN_OFF = "Forever yours,";
 export const CLOSING_NAME = "Baby 🦉";

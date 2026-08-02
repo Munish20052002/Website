@@ -7,6 +7,7 @@ import LiveCounter from "@/components/LiveCounter";
 import ReasonsGrid from "@/components/ReasonsGrid";
 import CouponBook from "@/components/CouponBook";
 import ClosingNote from "@/components/ClosingNote";
+import ApologyVerdict from "@/components/ApologyVerdict";
 import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
 import MusicToggle from "@/components/MusicToggle";
@@ -34,6 +35,7 @@ export default function Home() {
           <ReasonsGrid />
           <CouponBook />
           <ClosingNote />
+          <ApologyVerdict />
           <Footer />
         </main>
       </QuizGate>
