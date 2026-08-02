@@ -10,10 +10,11 @@ import ScrollProgress from "@/components/ScrollProgress";
 import MusicToggle from "@/components/MusicToggle";
 import FloatingParticles from "@/components/FloatingParticles";
 import CursorGlow from "@/components/CursorGlow";
+import QuizGate from "@/components/QuizGate";
 
 export default function Home() {
   return (
-    <>
+    <QuizGate>
       {/* Persistent overlays */}
       <ScrollProgress />
       <MusicToggle />
@@ -31,6 +32,6 @@ export default function Home() {
         <ClosingNote />
         <Footer />
       </main>
-    </>
+    </QuizGate>
   );
 }
