@@ -1,0 +1,3 @@
+# Drop your photos here!
+# Then update the image paths in src/utils/constants.ts
+# Example: image: "/images/saree.jpg"
