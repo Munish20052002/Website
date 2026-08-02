@@ -17,11 +17,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "For Ullu 💌",
+  title: "💌",
   description:
     "Something I made for you. Open it when you're alone and have a minute. — Baby",
   openGraph: {
-    title: "For Ullu 💌",
+    title: "💌",
     description:
       "Something I made for you. Open it when you're alone and have a minute.",
     type: "website",
