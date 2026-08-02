@@ -15,7 +15,6 @@ interface TrackConfig {
   title: string;
   subtitle: string;
   filePath: string;
-  startTime?: number; // Optional offset (e.g., jump right to hook)
 }
 
 const TRACKS: Record<AudioTrackType, TrackConfig> = {
@@ -23,19 +22,16 @@ const TRACKS: Record<AudioTrackType, TrackConfig> = {
     title: "Perfect",
     subtitle: "For My Ullu 🦉💖",
     filePath: "/audio/romantic-theme.mp3",
-    startTime: 0,
   },
   quiz: {
     title: "Perfect",
     subtitle: "For My Ullu 🦉💖",
     filePath: "/audio/romantic-theme.mp3",
-    startTime: 0,
   },
   letter: {
     title: "Perfect",
     subtitle: "For My Ullu 🦉💖",
     filePath: "/audio/romantic-theme.mp3",
-    startTime: 0,
   },
 };
 
@@ -59,81 +55,88 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   const [userInteracted, setUserInteracted] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const activeTrackRef = useRef<AudioTrackType>("intro");
+  const isPlayingRef = useRef(isPlaying);
+  const isMutedRef = useRef(isMuted);
+  const userInteractedRef = useRef(userInteracted);
 
-  // Play a specific track via real HTML5 Audio
-  const playTrackAudio = useCallback(
-    (trackKey: AudioTrackType) => {
-      const config = TRACKS[trackKey];
-      activeTrackRef.current = trackKey;
-
-      // Stop previous audio
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = "";
-      }
-
-      if (!isPlaying || isMuted) return;
-
-      const audio = new Audio(config.filePath);
-      audio.loop = true;
-      audio.volume = isMuted ? 0 : 0.65;
-      audioRef.current = audio;
-
-      // When ready, set offset if specified and play
-      audio.oncanplay = () => {
-        if (config.startTime && config.startTime > 0 && audio.currentTime < config.startTime) {
-          audio.currentTime = config.startTime;
-        }
-      };
-
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((err) => {
-          // Autoplay policy prevented playback until first user gesture
-          console.log("Audio waiting for user gesture:", err.message);
-        });
-      }
-    },
-    [isPlaying, isMuted]
-  );
-
-  // Trigger track change
-  const setTrack = useCallback(
-    (track: AudioTrackType) => {
-      setCurrentTrack(track);
-      if (userInteracted && isPlaying && !isMuted) {
-        playTrackAudio(track);
-      }
-    },
-    [userInteracted, isPlaying, isMuted, playTrackAudio]
-  );
-
-  // Start audio on first user tap/click
-  const startAudio = useCallback(() => {
-    if (!userInteracted) {
-      setUserInteracted(true);
-    }
-    if (audioRef.current && isPlaying && !isMuted) {
-      audioRef.current.play().catch(() => {});
-    } else {
-      playTrackAudio(currentTrack);
-    }
-  }, [userInteracted, isPlaying, isMuted, currentTrack, playTrackAudio]);
-
-  // Audio playback is explicitly initiated via startAudio() upon unlocking the passcode
-
-  // Update track when currentTrack or interaction changes
   useEffect(() => {
-    if (userInteracted) {
-      playTrackAudio(currentTrack);
+    isPlayingRef.current = isPlaying;
+    isMutedRef.current = isMuted;
+    userInteractedRef.current = userInteracted;
+  }, [isPlaying, isMuted, userInteracted]);
+
+  // Initialize or resume audio continuously
+  const startAudio = useCallback(() => {
+    setUserInteracted(true);
+    userInteractedRef.current = true;
+
+    if (!audioRef.current) {
+      const audio = new Audio(TRACKS.intro.filePath);
+      audio.loop = true;
+      audio.volume = isMutedRef.current ? 0 : 0.65;
+      audioRef.current = audio;
     }
-    return () => {
+
+    if (audioRef.current && isPlayingRef.current && !isMutedRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.play().catch(() => {});
+      }
+    }
+  }, []);
+
+  // Set track without restarting the audio stream
+  const setTrack = useCallback((track: AudioTrackType) => {
+    setCurrentTrack(track);
+    // If audio is already initialized and playing, keep playing continuously
+    if (audioRef.current && isPlayingRef.current && !isMutedRef.current) {
+      if (audioRef.current.paused && userInteractedRef.current) {
+        audioRef.current.play().catch(() => {});
+      }
+    }
+  }, []);
+
+  // Stop / pause audio when the user leaves the website (tab switch, window blur, page close)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // User switched tab or minimized window -> Pause audio
+        if (audioRef.current && !audioRef.current.paused) {
+          audioRef.current.pause();
+        }
+      } else {
+        // User returned to tab -> Resume audio if unlocked and not paused
+        if (
+          audioRef.current &&
+          audioRef.current.paused &&
+          isPlayingRef.current &&
+          !isMutedRef.current &&
+          userInteractedRef.current
+        ) {
+          audioRef.current.play().catch(() => {});
+        }
+      }
+    };
+
+    const handlePageLeave = () => {
       if (audioRef.current) {
         audioRef.current.pause();
       }
     };
-  }, [currentTrack, userInteracted, playTrackAudio]);
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handlePageLeave);
+    window.addEventListener("beforeunload", handlePageLeave);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handlePageLeave);
+      window.removeEventListener("beforeunload", handlePageLeave);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+      }
+    };
+  }, []);
 
   // Handle mute/unmute
   const toggleMute = () => {
@@ -143,9 +146,9 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
       if (audioRef.current) {
         audioRef.current.muted = false;
         audioRef.current.volume = 0.65;
-        audioRef.current.play().catch(() => {});
-      } else {
-        playTrackAudio(currentTrack);
+        if (isPlaying && audioRef.current.paused) {
+          audioRef.current.play().catch(() => {});
+        }
       }
     } else {
       setIsMuted(true);
@@ -167,8 +170,6 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
       setIsPlaying(true);
       if (audioRef.current) {
         audioRef.current.play().catch(() => {});
-      } else {
-        playTrackAudio(currentTrack);
       }
     }
   };
