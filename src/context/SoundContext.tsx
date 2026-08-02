@@ -20,21 +20,21 @@ interface TrackConfig {
 
 const TRACKS: Record<AudioTrackType, TrackConfig> = {
   intro: {
-    title: "Tum Se Hi",
-    subtitle: "Jab We Met 💖",
-    filePath: "/audio/intro.mp3",
+    title: "Perfect",
+    subtitle: "For My Ullu 🦉💖",
+    filePath: "/audio/romantic-theme.mp3",
     startTime: 0,
   },
   quiz: {
-    title: "Tere Liye",
-    subtitle: "KK 🌹",
-    filePath: "/audio/tere-liye.mp3",
+    title: "Perfect",
+    subtitle: "For My Ullu 🦉💖",
+    filePath: "/audio/romantic-theme.mp3",
     startTime: 0,
   },
   letter: {
     title: "Perfect",
-    subtitle: "Ed Sheeran 💌",
-    filePath: "/audio/perfect.mp3",
+    subtitle: "For My Ullu 🦉💖",
+    filePath: "/audio/romantic-theme.mp3",
     startTime: 0,
   },
 };
