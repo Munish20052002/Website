@@ -14,31 +14,34 @@ import MusicToggle from "@/components/MusicToggle";
 import FloatingParticles from "@/components/FloatingParticles";
 import CursorGlow from "@/components/CursorGlow";
 import QuizGate from "@/components/QuizGate";
+import PasscodeGate from "@/components/PasscodeGate";
 import { SoundProvider } from "@/context/SoundContext";
 
 export default function Home() {
   return (
     <SoundProvider>
-      <QuizGate>
-        {/* Persistent overlays */}
-        <ScrollProgress />
-        <MusicToggle />
-        <FloatingParticles />
-        <CursorGlow />
+      <PasscodeGate>
+        <QuizGate>
+          {/* Persistent overlays */}
+          <ScrollProgress />
+          <MusicToggle />
+          <FloatingParticles />
+          <CursorGlow />
 
-        {/* Main content — sections flow dark → warm like a sunrise */}
-        <main>
-          <Hero />
-          <Apology />
-          <Timeline />
-          <LiveCounter />
-          <ReasonsGrid />
-          <CouponBook />
-          <ClosingNote />
-          <ApologyVerdict />
-          <Footer />
-        </main>
-      </QuizGate>
+          {/* Main content — sections flow dark → warm like a sunrise */}
+          <main>
+            <Hero />
+            <Apology />
+            <Timeline />
+            <LiveCounter />
+            <ReasonsGrid />
+            <CouponBook />
+            <ClosingNote />
+            <ApologyVerdict />
+            <Footer />
+          </main>
+        </QuizGate>
+      </PasscodeGate>
     </SoundProvider>
   );
 }

@@ -121,23 +121,7 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     }
   }, [userInteracted, isPlaying, isMuted, currentTrack, playTrackAudio]);
 
-  // Global listener for first touch/click
-  useEffect(() => {
-    const handleFirstGesture = () => {
-      setUserInteracted(true);
-      if (audioRef.current && audioRef.current.paused && isPlaying && !isMuted) {
-        audioRef.current.play().catch(() => {});
-      }
-    };
-
-    window.addEventListener("click", handleFirstGesture, { once: true });
-    window.addEventListener("touchstart", handleFirstGesture, { once: true });
-
-    return () => {
-      window.removeEventListener("click", handleFirstGesture);
-      window.removeEventListener("touchstart", handleFirstGesture);
-    };
-  }, [isPlaying, isMuted]);
+  // Audio playback is explicitly initiated via startAudio() upon unlocking the passcode
 
   // Update track when currentTrack or interaction changes
   useEffect(() => {
