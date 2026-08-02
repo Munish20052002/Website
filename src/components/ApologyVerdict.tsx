@@ -4,12 +4,67 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Sparkles, AlertCircle, RefreshCw, CheckCircle2 } from "lucide-react";
 
-// Self-contained high-performance celebratory confetti canvas
-function ConfettiCanvas({ active }: { active: boolean }) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+interface ShowerItem {
+  id: number;
+  text: string;
+  emoji: string;
+  x: number;
+  duration: number;
+  delay: number;
+  size: number;
+  color: string;
+}
 
+// Grand Finale Love, Huggies & Kisses Shower Overlay
+function LoveShowerCanvas({ active, triggerCount }: { active: boolean; triggerCount: number }) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [floatingBadges, setFloatingBadges] = useState<ShowerItem[]>([]);
+
+  // Spawn floating romantic pills on trigger
   useEffect(() => {
-    if (!active) return;
+    if (!active && triggerCount === 0) return;
+
+    const messages = [
+      { text: "Miss You So Much! 🥺", emoji: "💌" },
+      { text: "Unlimited Huggies! 🫂", emoji: "🤗" },
+      { text: "Million Kisses For You 💋", emoji: "😘" },
+      { text: "Forever Your Baby 🦉", emoji: "❤️" },
+      { text: "I Love You Ullu 💖", emoji: "✨" },
+      { text: "My Whole World 🌍", emoji: "💍" },
+      { text: "Can't Wait To Hug You! 🤗", emoji: "🥰" },
+      { text: "Pappi & Jhappi! 💋", emoji: "💖" },
+      { text: "Always & Forever ❤️", emoji: "🌹" },
+      { text: "My Sweet Mottu 🦉", emoji: "💕" },
+    ];
+
+    const colors = [
+      "from-crimson/90 to-rose/90",
+      "from-rose-gold/90 to-crimson/90",
+      "from-rose/90 to-pink-500/90",
+      "from-purple-900/90 to-crimson/90",
+      "from-amber-600/90 to-rose/90",
+    ];
+
+    const newBadges: ShowerItem[] = Array.from({ length: 24 }).map((_, i) => {
+      const msg = messages[i % messages.length];
+      return {
+        id: Date.now() + i + Math.random(),
+        text: msg.text,
+        emoji: msg.emoji,
+        x: Math.random() * 85 + 5, // 5% to 90% width
+        duration: Math.random() * 3.5 + 4, // 4s to 7.5s
+        delay: Math.random() * 2.5,
+        size: Math.random() * 0.3 + 0.85,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      };
+    });
+
+    setFloatingBadges(newBadges);
+  }, [active, triggerCount]);
+
+  // High-performance canvas rain of kisses, huggies, hearts & stars
+  useEffect(() => {
+    if (!active && triggerCount === 0) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -26,75 +81,75 @@ function ConfettiCanvas({ active }: { active: boolean }) {
     };
     window.addEventListener("resize", handleResize);
 
-    const colors = ["#ff3366", "#ff758c", "#ffd700", "#ff69b4", "#ffffff", "#e63946", "#ffb7b2"];
+    const loveSymbols = ["💋", "🫂", "💖", "😘", "🤗", "💕", "✨", "🌹", "💄", "💌", "🌸"];
     const particles: Array<{
       x: number;
       y: number;
-      vx: number;
       vy: number;
+      vx: number;
+      symbol: string;
       size: number;
-      color: string;
       rotation: number;
       rotationSpeed: number;
-      shape: "rect" | "circle" | "heart";
+      wobbleSpeed: number;
+      wobbleAmp: number;
+      initialX: number;
       opacity: number;
     }> = [];
 
-    // Spawn 120 vibrant particles
-    for (let i = 0; i < 120; i++) {
+    // Create 90 cascading love symbols
+    for (let i = 0; i < 90; i++) {
+      const initX = Math.random() * width;
       particles.push({
-        x: width * (0.2 + Math.random() * 0.6),
-        y: height * 0.7,
-        vx: (Math.random() - 0.5) * 14,
-        vy: -Math.random() * 16 - 6,
-        size: Math.random() * 9 + 5,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        rotation: Math.random() * 360,
-        rotationSpeed: (Math.random() - 0.5) * 10,
-        shape: Math.random() > 0.4 ? "heart" : Math.random() > 0.5 ? "rect" : "circle",
-        opacity: 1,
+        x: initX,
+        initialX: initX,
+        y: Math.random() * -height * 1.2, // start staggered above screen
+        vy: Math.random() * 3 + 2.5, // gentle falling speed
+        vx: 0,
+        symbol: loveSymbols[Math.floor(Math.random() * loveSymbols.length)],
+        size: Math.random() * 22 + 18, // 18px to 40px
+        rotation: (Math.random() - 0.5) * 30,
+        rotationSpeed: (Math.random() - 0.5) * 2,
+        wobbleSpeed: Math.random() * 0.04 + 0.02,
+        wobbleAmp: Math.random() * 25 + 15,
+        opacity: Math.random() * 0.4 + 0.6,
       });
     }
 
+    let frame = 0;
     const startTime = Date.now();
-    const duration = 4500; // 4.5s burst
+    const totalDuration = 10000; // 10 seconds continuous rain
 
     const render = () => {
+      frame++;
       const elapsed = Date.now() - startTime;
       ctx.clearRect(0, 0, width, height);
 
       particles.forEach((p) => {
-        p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.35; // gravity
-        p.vx *= 0.985; // friction
+        p.x = p.initialX + Math.sin(frame * p.wobbleSpeed) * p.wobbleAmp;
         p.rotation += p.rotationSpeed;
 
-        if (elapsed > 2500) {
-          p.opacity = Math.max(0, 1 - (elapsed - 2500) / 2000);
+        // Reset to top if it leaves bottom
+        if (p.y > height + 50) {
+          if (elapsed < totalDuration - 2000) {
+            p.y = -50;
+            p.initialX = Math.random() * width;
+          }
         }
 
         ctx.save();
         ctx.globalAlpha = p.opacity;
         ctx.translate(p.x, p.y);
         ctx.rotate((p.rotation * Math.PI) / 180);
-        ctx.fillStyle = p.color;
-
-        if (p.shape === "circle") {
-          ctx.beginPath();
-          ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
-          ctx.fill();
-        } else if (p.shape === "rect") {
-          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
-        } else {
-          // Heart shape
-          ctx.font = `${p.size * 1.5}px serif`;
-          ctx.fillText("💖", -p.size / 2, p.size / 2);
-        }
+        ctx.font = `${p.size}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.symbol, 0, 0);
         ctx.restore();
       });
 
-      if (elapsed < duration) {
+      if (elapsed < totalDuration) {
         animationFrameId = requestAnimationFrame(render);
       }
     };
@@ -105,25 +160,48 @@ function ConfettiCanvas({ active }: { active: boolean }) {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [active]);
+  }, [active, triggerCount]);
 
-  if (!active) return null;
+  if (!active && triggerCount === 0) return null;
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-50 w-full h-full"
-    />
+    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+
+      {/* Floating text badges with smooth Framer Motion falling physics */}
+      {floatingBadges.map((badge) => (
+        <motion.div
+          key={badge.id}
+          initial={{ y: -100, x: `${badge.x}vw`, opacity: 0, scale: 0.8 }}
+          animate={{
+            y: "110vh",
+            opacity: [0, 1, 1, 0.9, 0],
+            scale: [0.8, 1, 1, 0.95],
+            rotate: [-6, 6, -4, 4],
+          }}
+          transition={{
+            duration: badge.duration,
+            delay: badge.delay,
+            ease: "easeInOut",
+          }}
+          style={{ transform: `scale(${badge.size})` }}
+          className={`absolute left-0 px-4 py-2 rounded-full bg-gradient-to-r ${badge.color} text-white font-inter font-semibold text-xs sm:text-sm shadow-[0_8px_25px_rgba(0,0,0,0.5)] border border-white/30 backdrop-blur-md flex items-center gap-2 select-none whitespace-nowrap`}
+        >
+          <span className="text-base">{badge.emoji}</span>
+          <span>{badge.text}</span>
+        </motion.div>
+      ))}
+    </div>
   );
 }
 
 export default function ApologyVerdict() {
   const [verdict, setVerdict] = useState<"pending" | "accepted" | "rejected">("pending");
-  const [confettiTrigger, setConfettiTrigger] = useState(0);
+  const [showerCount, setShowerCount] = useState(0);
 
   const handleAccept = () => {
     setVerdict("accepted");
-    setConfettiTrigger((prev) => prev + 1);
+    setShowerCount((prev) => prev + 1);
   };
 
   const handleReject = () => {
@@ -134,6 +212,10 @@ export default function ApologyVerdict() {
     setVerdict("pending");
   };
 
+  const handleShowerTrigger = () => {
+    setShowerCount((prev) => prev + 1);
+  };
+
   return (
     <section
       id="verdict"
@@ -142,7 +224,7 @@ export default function ApologyVerdict() {
         background: "linear-gradient(180deg, #120409 0%, #1a0610 50%, #0d0206 100%)",
       }}
     >
-      <ConfettiCanvas active={verdict === "accepted" || confettiTrigger > 0} />
+      <LoveShowerCanvas active={verdict === "accepted"} triggerCount={showerCount} />
 
       {/* Ambient background glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[350px] sm:w-[650px] h-[350px] sm:h-[650px] bg-crimson/15 rounded-full blur-[120px] pointer-events-none" />
@@ -333,25 +415,16 @@ export default function ApologyVerdict() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="font-playfair text-3xl sm:text-5xl md:text-6xl text-cream font-bold mb-3 tracking-tight"
+                className="font-playfair text-3xl sm:text-5xl md:text-6xl text-cream font-bold mb-4 tracking-tight"
               >
                 YAYYY! 🎉 Best Girlfriend Ever!
               </motion.h2>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="font-inter text-rose-light text-sm sm:text-base md:text-lg max-w-xl mx-auto mb-6 sm:mb-8 leading-relaxed"
-              >
-                Look at the two of them hugging tight, and the tall &amp; slim Ullu doing a happy victory dance! 🕺🦉❤️
-              </motion.p>
 
               {/* Grand Mesmerizing Image Reveal */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.7 }}
+                transition={{ delay: 0.4, duration: 0.7 }}
                 className="relative mx-auto w-full max-w-lg aspect-[4/3] rounded-2xl overflow-hidden border-2 border-rose-gold/40 shadow-[0_0_50px_rgba(255,183,178,0.3)] mb-8 group"
               >
                 {/* Glowing radial pulse behind image */}
@@ -365,23 +438,35 @@ export default function ApologyVerdict() {
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-midnight/80 via-transparent to-transparent flex items-end justify-center p-4">
-                  <span className="text-cream text-xs sm:text-sm font-inter tracking-wide bg-black/60 px-5 py-2 rounded-full backdrop-blur-md border border-rose-gold/30 flex items-center gap-2">
+                  <span className="text-cream text-xs sm:text-sm font-inter tracking-wide bg-black/60 px-5 py-2 rounded-full backdrop-blur-md border border-rose-gold/30 flex items-center gap-2 shadow-lg">
                     <Heart className="w-4 h-4 fill-crimson text-crimson animate-ping" />
                     <span>Forever &amp; Always Yours, Ullu 🦉💖</span>
                   </span>
                 </div>
               </motion.div>
 
-              {/* Extra Confetti Trigger */}
-              <motion.button
-                onClick={handleAccept}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-cream text-xs sm:text-sm font-inter border border-white/20 inline-flex items-center gap-2 transition-all duration-200"
+              {/* The Grand Finale Shower Trigger Button */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="flex flex-col items-center gap-3"
               >
-                <Sparkles className="w-4 h-4 text-rose-gold" />
-                <span>Send More Love &amp; Sparkles ✨</span>
-              </motion.button>
+                <motion.button
+                  onClick={handleShowerTrigger}
+                  whileHover={{ scale: 1.06 }}
+                  whileTap={{ scale: 0.94 }}
+                  className="px-8 sm:px-10 py-4 sm:py-4.5 rounded-full bg-gradient-to-r from-crimson via-rose to-rose-gold text-white font-inter font-semibold text-sm sm:text-base shadow-[0_0_35px_rgba(230,57,70,0.6)] border border-white/30 flex items-center justify-center gap-3 transition-all duration-300 touch-manipulation animate-pulse"
+                >
+                  <span className="text-xl">💋</span>
+                  <span>With Lots of Love, your baby 🦉❤️</span>
+                  <Sparkles className="w-5 h-5 text-amber-200 fill-amber-200" />
+                </motion.button>
+
+                <p className="text-xs text-rose-light/50 font-inter">
+                  Tap anytime to send infinite love from the sky ✨
+                </p>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
